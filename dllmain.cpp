@@ -9,7 +9,7 @@ namespace
 	const std::string messageBoxMessageDetach("Detaching in");
 	const std::string messageBoxMessageAttach("Attaching in");
 	const enum HookTypes { DESACTIVATE, ACTIVATE };
-	
+
 	const std::string baseModuleName("Tomb2.exe");
 	const std::string signature = "\x83\xC4\x04\xA8\x04\x75\x24";
 	const std::string mask = "xxxxxxx";
@@ -21,7 +21,7 @@ DWORD collisionInsAddress = 0;
 
 extern "C"
 {
-	#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 
 	__declspec(naked) void activateNoClip()
 	{
@@ -44,20 +44,22 @@ extern "C"
 template<int TYPE = ACTIVATE>
 void initiateHooks()
 {
-	collisionInsAddress = ghe::codeCave::findPattern(baseModuleName, signature, mask);
+	collisionInsAddress = ghe::winCodeCave::findPattern(baseModuleName, signature, mask);
 	collisionJmpBack = collisionInsAddress + static_cast<DWORD>(mask.size());
 
-	 //for debug
-	//helper::debugMessageBox<decltype(collisionInsAddress)>(messageBoxMessage, collisionInsAddress);
+	//for debug
+   //helper::debugMessageBox<decltype(collisionInsAddress)>(messageBoxMessage, collisionInsAddress);
 
 	if constexpr (TYPE == ACTIVATE)
 	{
-		ghe::codeCave::jumpCodeCave(reinterpret_cast<BYTE*>(collisionInsAddress), reinterpret_cast<DWORD>(activateNoClip), static_cast<DWORD>(mask.size()));
+		ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(collisionInsAddress), reinterpret_cast<DWORD>(activateNoClip),
+			static_cast<DWORD>(mask.size()));
 	}
 
 	else if constexpr (TYPE == DESACTIVATE)
 	{
-		ghe::codeCave::jumpCodeCave(reinterpret_cast<BYTE*>(collisionInsAddress), reinterpret_cast<DWORD>(desactivateNoClip), static_cast<DWORD>(mask.size()));
+		ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(collisionInsAddress), reinterpret_cast<DWORD>(desactivateNoClip),
+			static_cast<DWORD>(mask.size()));
 	}
 }
 
