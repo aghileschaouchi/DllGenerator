@@ -23,5 +23,8 @@
     <ClInclude Include="NoClip.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InfiniteAmmo.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

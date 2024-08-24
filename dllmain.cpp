@@ -1,35 +1,39 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 
+#include "../GameHackingEngine/include/core/WinCodeCave.h"
+#include "../GameHackingEngine/include/helper/Helper.h"
+
 #include "NoClip.hpp"
+//#include "InfiniteAmmo.hpp"
 
 namespace
 {
+	const std::string baseModuleName("Tomb2.exe");
 	const std::string messageBoxMessage("Injection location address");
 	const std::string messageBoxMessageDetach("Detaching in");
 	const std::string messageBoxMessageAttach("Attaching in");
-	const enum HookTypes { DESACTIVATE, ACTIVATE };
 }
 
-template<int TYPE = ACTIVATE>
 void initiateHooks()
 {
-	collisionInsAddress = ghe::winCodeCave::findPattern(baseModuleName, signature, mask);
-	collisionJmpBack = collisionInsAddress + static_cast<DWORD>(mask.size());
-
+	//Noclip
+	collisionInsAddress = ghe::winCodeCave::findPattern(baseModuleName, noClip::signature, noClip::mask);
+	collisionJmpBack = collisionInsAddress + static_cast<DWORD>(noClip::mask.size());
 	//for debug
-   //helper::debugMessageBox<decltype(collisionInsAddress)>(messageBoxMessage, collisionInsAddress);
+   helper::debugMessageBox<decltype(collisionInsAddress)>(messageBoxMessage, collisionInsAddress);
+   helper::debugMessageBox<decltype(collisionJmpBack)>(messageBoxMessage, collisionJmpBack);
+   ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(collisionInsAddress), reinterpret_cast<DWORD>(activateNoClip),
+		static_cast<DWORD>(noClip::mask.size()));
 
-	if constexpr (TYPE == ACTIVATE)
-	{
-		ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(collisionInsAddress), reinterpret_cast<DWORD>(activateNoClip),
-			static_cast<DWORD>(mask.size()));
-	}
+	//Infinite ammo
+	/*decAmmoAddress = ghe::winCodeCave::findPattern(baseModuleName, infiniteAmmo::signature, infiniteAmmo::mask);
+	decAmmoJmpBack = decAmmoAddress + static_cast<DWORD>(infiniteAmmo::mask.size());
+	//for debug
+	helper::debugMessageBox<decltype(decAmmoAddress)>(messageBoxMessage, decAmmoAddress);
+	helper::debugMessageBox<decltype(decAmmoJmpBack)>(messageBoxMessage, decAmmoJmpBack);*/
 
-	else if constexpr (TYPE == DESACTIVATE)
-	{
-		ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(collisionInsAddress), reinterpret_cast<DWORD>(desactivateNoClip),
-			static_cast<DWORD>(mask.size()));
-	}
+	/*ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(decAmmoAddress), reinterpret_cast<DWORD>(activateInfiniteAmmo),
+		static_cast<DWORD>(infiniteAmmo::mask.size()));*/
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -41,13 +45,13 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 		//helper::debugMessageBox<decltype(collisionInsAddress)>(messageBoxMessageAttach, collisionInsAddress); 
-		initiateHooks<ACTIVATE>();
+		initiateHooks();
 		break;
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:
 	case DLL_PROCESS_DETACH:
 		//helper::debugMessageBox<decltype(collisionInsAddress)>(messageBoxMessageDetach, collisionInsAddress);
-		initiateHooks<DESACTIVATE>();
+		//terminate and free process
 		break;
 	}
 	return TRUE;
