@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "../GameHackingEngine/include/core/WinCodeCave.h"
 #include "../GameHackingEngine/include/helper/Helper.h"
 
@@ -28,7 +30,15 @@ namespace infiniteAmmo
 		const std::string signature = "\x66\xFF\x0C\x55\xE8\x54\x46\x00";
 		const std::string mask = "xxxxxxx?";
 	}
-}
+
+
+struct signatureMaskAddrs
+{
+	const std::string signature;
+	const std::string mask;
+	DWORD addr;
+	DWORD jmpBackAddr;
+};
 
 //big weapons
 DWORD bigWeaponsDecAmmoAddress = 0;
@@ -43,3 +53,19 @@ DWORD flaresMedicsDecAmmoJmpBack = 0;
 DWORD harpoonDecAmmoAddress = 0;
 DWORD harpoonDecAmmoJmpBack = 0;
 
+std::vector<signatureMaskAddrs> items = { {bigWeapons::signature, bigWeapons::mask, bigWeaponsDecAmmoAddress, bigWeaponsDecAmmoJmpBack}, 
+	{weapons::signature, weapons::mask, weaponsDecAmmoAddress, weaponsDecAmmoJmpBack}, 
+	{flaresMedics::signature, flaresMedics::mask, flaresMedicsDecAmmoAddress, flaresMedicsDecAmmoJmpBack}, 
+	{harpoon::signature, harpoon::mask, harpoonDecAmmoAddress, harpoonDecAmmoJmpBack} };
+
+bool activateInfiniteAmmo(const std::string& baseModuleName)
+{
+	for (auto&& item : items)
+	{
+		item.addr = ghe::winCodeCave::findPattern(baseModuleName, item.signature, item.mask);
+		item.jmpBackAddr = item.addr + static_cast<DWORD>(item.mask.size());
+		ghe::winCodeCave::fillWithNop(static_cast<uintptr_t>(item.addr), static_cast<DWORD>(item.mask.size()));
+	}
+	return true;
+}
+}
