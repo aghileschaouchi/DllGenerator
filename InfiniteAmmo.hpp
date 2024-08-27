@@ -5,23 +5,41 @@
 
 namespace infiniteAmmo
 {
-	const std::string signature = "\xFF\x0D\xB0\x07\x52\x00";
-	const std::string mask = "xxxxx?";
-}
-
-DWORD decAmmoJmpBack = 0;
-DWORD decAmmoAddress = 0;
-const DWORD _decAmmoInsAddress = 0x0042C5D9;
-const DWORD _grenadeLauncherAmmoAddress = 0x005207;
-
-extern "C"
-{
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-
-	__declspec(naked) void activateInfiniteAmmo()
+	namespace bigWeapons
 	{
-		__asm INC[_grenadeLauncherAmmoAddress];
-		__asm JMP[decAmmoJmpBack]
+		const std::string signature = "\xFF\x0D\xB0\x07\x52\x00";
+		const std::string mask = "xxxxx?";
+	}
+	
+	namespace harpoon
+	{
+		const std::string signature = "\xFF\x0D\xAC\x07\x52\x00";
+		const std::string mask = "xxxxx?";
+	}
+
+	namespace weapons
+	{
+		const std::string signature = "\x49\x89\x08";
+		const std::string mask = "xxx";
+	}
+	
+	namespace flaresMedics
+	{
+		const std::string signature = "\x66\xFF\x0C\x55\xE8\x54\x46\x00";
+		const std::string mask = "xxxxxxx?";
 	}
 }
+
+//big weapons
+DWORD bigWeaponsDecAmmoAddress = 0;
+DWORD bigWeaponsDecAmmoJmpBack = 0;
+//weapons
+DWORD weaponsDecAmmoAddress = 0;
+DWORD weaponsDecAmmoJmpBack = 0;
+//medic packs and flares
+DWORD flaresMedicsDecAmmoAddress = 0;
+DWORD flaresMedicsDecAmmoJmpBack = 0;
+//harpoon
+DWORD harpoonDecAmmoAddress = 0;
+DWORD harpoonDecAmmoJmpBack = 0;
 

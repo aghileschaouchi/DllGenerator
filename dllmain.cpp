@@ -3,8 +3,8 @@
 #include "../GameHackingEngine/include/core/WinCodeCave.h"
 #include "../GameHackingEngine/include/helper/Helper.h"
 
-#include "NoClip.hpp"
-//#include "InfiniteAmmo.hpp"
+//#include "NoClip.hpp"
+#include "InfiniteAmmo.hpp"
 
 namespace
 {
@@ -16,24 +16,32 @@ namespace
 
 void initiateHooks()
 {
-	//Noclip
-	collisionInsAddress = ghe::winCodeCave::findPattern(baseModuleName, noClip::signature, noClip::mask);
-	collisionJmpBack = collisionInsAddress + static_cast<DWORD>(noClip::mask.size());
-	//for debug
-   helper::debugMessageBox<decltype(collisionInsAddress)>(messageBoxMessage, collisionInsAddress);
-   helper::debugMessageBox<decltype(collisionJmpBack)>(messageBoxMessage, collisionJmpBack);
-   ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(collisionInsAddress), reinterpret_cast<DWORD>(activateNoClip),
-		static_cast<DWORD>(noClip::mask.size()));
+	////Noclip
+	//collisionInsAddress = ghe::winCodeCave::findPattern(baseModuleName, noClip::signature, noClip::mask);
+	//collisionJmpBack = collisionInsAddress + static_cast<DWORD>(noClip::mask.size());
+	////for debug
+ //  helper::debugMessageBox<decltype(collisionInsAddress)>(messageBoxMessage, collisionInsAddress);
+ //  helper::debugMessageBox<decltype(collisionJmpBack)>(messageBoxMessage, collisionJmpBack);
+  // ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(collisionInsAddress), reinterpret_cast<DWORD>(activateNoClip),
+		//static_cast<DWORD>(noClip::mask.size()));
 
 	//Infinite ammo
-	/*decAmmoAddress = ghe::winCodeCave::findPattern(baseModuleName, infiniteAmmo::signature, infiniteAmmo::mask);
-	decAmmoJmpBack = decAmmoAddress + static_cast<DWORD>(infiniteAmmo::mask.size());
-	//for debug
-	helper::debugMessageBox<decltype(decAmmoAddress)>(messageBoxMessage, decAmmoAddress);
-	helper::debugMessageBox<decltype(decAmmoJmpBack)>(messageBoxMessage, decAmmoJmpBack);*/
-
-	/*ghe::winCodeCave::codeCave1<ghe::winCodeCave::ASM::JMP>(static_cast<uintptr_t>(decAmmoAddress), reinterpret_cast<DWORD>(activateInfiniteAmmo),
-		static_cast<DWORD>(infiniteAmmo::mask.size()));*/
+	//shotgun and grenade launcher
+	bigWeaponsDecAmmoAddress = ghe::winCodeCave::findPattern(baseModuleName, infiniteAmmo::bigWeapons::signature, infiniteAmmo::bigWeapons::mask);
+	bigWeaponsDecAmmoJmpBack = bigWeaponsDecAmmoAddress + static_cast<DWORD>(infiniteAmmo::bigWeapons::mask.size());
+	ghe::winCodeCave::fillWithNop(static_cast<uintptr_t>(bigWeaponsDecAmmoAddress), static_cast<DWORD>(infiniteAmmo::bigWeapons::mask.size()));
+	//uzi auto pistols m16
+	weaponsDecAmmoAddress = ghe::winCodeCave::findPattern(baseModuleName, infiniteAmmo::weapons::signature, infiniteAmmo::weapons::mask);
+	weaponsDecAmmoJmpBack = weaponsDecAmmoAddress + static_cast<DWORD>(infiniteAmmo::weapons::mask.size());
+	ghe::winCodeCave::fillWithNop(static_cast<uintptr_t>(weaponsDecAmmoAddress), static_cast<DWORD>(infiniteAmmo::weapons::mask.size()));
+	//medic packs and flares
+	flaresMedicsDecAmmoAddress = ghe::winCodeCave::findPattern(baseModuleName, infiniteAmmo::flaresMedics::signature, infiniteAmmo::flaresMedics::mask);
+	flaresMedicsDecAmmoJmpBack = flaresMedicsDecAmmoAddress + static_cast<DWORD>(infiniteAmmo::flaresMedics::mask.size());
+	ghe::winCodeCave::fillWithNop(static_cast<uintptr_t>(flaresMedicsDecAmmoAddress), static_cast<DWORD>(infiniteAmmo::flaresMedics::mask.size()));
+	//harpoon
+	harpoonDecAmmoAddress = ghe::winCodeCave::findPattern(baseModuleName, infiniteAmmo::harpoon::signature, infiniteAmmo::harpoon::mask);
+	harpoonDecAmmoJmpBack = harpoonDecAmmoAddress + static_cast<DWORD>(infiniteAmmo::harpoon::mask.size());
+	ghe::winCodeCave::fillWithNop(static_cast<uintptr_t>(harpoonDecAmmoAddress), static_cast<DWORD>(infiniteAmmo::harpoon::mask.size()));
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,
