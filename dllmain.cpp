@@ -4,7 +4,8 @@
 #include "../GameHackingEngine/include/helper/Helper.h"
 
 //#include "NoClip.hpp"
-#include "InfiniteAmmo.hpp"
+//#include "InfiniteAmmo.hpp"
+#include "SpeedHack.hpp"
 
 namespace
 {
@@ -26,10 +27,18 @@ void initiateHooks()
 		//static_cast<DWORD>(noClip::mask.size()));
 
 	//Infinite ammo
-	if (!infiniteAmmo::activateInfiniteAmmo(baseModuleName))
+	/*if (!infiniteAmmo::activateInfiniteAmmo(baseModuleName))
+	{
+		exit;
+	}*/
+
+	//Speed hack
+	if (!speedHack::changeGroundSpeed(baseModuleName, static_cast<unsigned int>(2)))
 	{
 		exit;
 	}
+	helper::debugMessageBox<decltype(speedHack::xGroundSpeedAddress)>(messageBoxMessageDetach, speedHack::xGroundSpeedAddress);
+	helper::debugMessageBox<decltype(speedHack::yGroundSpeedAddress)>(messageBoxMessageDetach, speedHack::yGroundSpeedAddress);
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule,

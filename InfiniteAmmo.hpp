@@ -40,6 +40,7 @@ struct signatureMaskAddrs
 	DWORD jmpBackAddr;
 };
 
+//declared global for __naked functions use. Otherwise, can be declared locally
 //big weapons
 DWORD bigWeaponsDecAmmoAddress = 0;
 DWORD bigWeaponsDecAmmoJmpBack = 0;

@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="InfiniteAmmo.hpp" />
     <ClInclude Include="NoClip.hpp" />
+    <ClInclude Include="SpeedHack.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
